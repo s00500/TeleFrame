@@ -29,6 +29,10 @@ var InputHandler = class {
     globalShortcut.register(config.keys.play, () => {
       this.emitter.send("play");
     });
+
+    globalShortcut.register(config.keys.playpause, () => {
+      this.emitter.send("playpause");
+    });
   }
 };
 

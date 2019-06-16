@@ -1,5 +1,5 @@
 // Imports
-const {remote, ipcRenderer} = require("electron");
+const { remote, ipcRenderer } = require("electron");
 const $ = require("jquery");
 window.jQuery = $;
 const Swal = require("sweetalert2");
@@ -17,7 +17,14 @@ var images = remote.getGlobal("images");
 var container = document.getElementById("container");
 var isPaused = false;
 var currentImageIndex = images.length;
-var startTime, endTime, longpress, timeout, recordSwal, currentChatId, currentMessageId, currentTimeout;
+var startTime,
+  endTime,
+  longpress,
+  timeout,
+  recordSwal,
+  currentChatId,
+  currentMessageId,
+  currentTimeout;
 
 // configure sound notification sound
 if (config.playSoundOnRecieve != false) {
@@ -25,28 +32,32 @@ if (config.playSoundOnRecieve != false) {
 }
 
 // handle touch events for navigation and voice reply
-$("body").on('touchstart', function() {
+$("body").on("touchstart", function() {
   startTime = new Date().getTime();
-  currentImageForVoiceReply = images[currentImageIndex]
+  currentImageForVoiceReply = images[currentImageIndex];
 });
 
-$("body").on('touchend', function(event) {
+$("body").on("touchend", function(event) {
   endTime = new Date().getTime();
-  longpress = (endTime - startTime > 500) ? true : false;
-  tapPos = event.originalEvent.changedTouches[0].pageX
-  containerWidth = $("body").width()
+  longpress = endTime - startTime > 500 ? true : false;
+  tapPos = event.originalEvent.changedTouches[0].pageX;
+  containerWidth = $("body").width();
   if (tapPos / containerWidth < 0.2) {
-    previousImage()
+    previousImage();
   } else if (tapPos / containerWidth > 0.8) {
-    nextImage()
+    nextImage();
   } else {
     if (longpress) {
-      ipcRenderer.send("record", currentImageForVoiceReply['chatId'], currentImageForVoiceReply['messageId']);
+      ipcRenderer.send(
+        "record",
+        currentImageForVoiceReply["chatId"],
+        currentImageForVoiceReply["messageId"]
+      );
     } else {
       if (isPaused) {
-        play()
+        play();
       } else {
-        pause()
+        pause();
       }
     }
   }
@@ -54,10 +65,13 @@ $("body").on('touchend', function(event) {
 
 // handle pressed record button
 ipcRenderer.on("recordButtonPressed", function(event, arg) {
-  currentImageForVoiceReply = images[currentImageIndex]
-  ipcRenderer.send("record", currentImageForVoiceReply['chatId'], currentImageForVoiceReply['messageId']);
+  currentImageForVoiceReply = images[currentImageIndex];
+  ipcRenderer.send(
+    "record",
+    currentImageForVoiceReply["chatId"],
+    currentImageForVoiceReply["messageId"]
+  );
 });
-
 
 // show record in progress message
 ipcRenderer.on("recordStarted", function(event, arg) {
@@ -66,10 +80,13 @@ ipcRenderer.on("recordStarted", function(event, arg) {
   spinner.classList.add("spinner");
   message.appendChild(spinner);
   let text = document.createElement("p");
-  messageText = config.voiceReply.recordingPreMessage
-                    + ' ' + currentImageForVoiceReply['chatName']
-                    + ' ' + config.voiceReply.recordingPostMessage;
-  text.innerHTML = messageText
+  messageText =
+    config.voiceReply.recordingPreMessage +
+    " " +
+    currentImageForVoiceReply["chatName"] +
+    " " +
+    config.voiceReply.recordingPostMessage;
+  text.innerHTML = messageText;
   message.appendChild(text);
   recordSwal = Swal.fire({
     title: config.voiceReply.recordingMessageTitle,
@@ -82,8 +99,10 @@ ipcRenderer.on("recordStarted", function(event, arg) {
 ipcRenderer.on("recordStopped", function(event, arg) {
   let message = document.createElement("div");
   let text = document.createElement("p");
-  text.innerHTML = config.voiceReply.recordingDone
-                    + ' ' + currentImageForVoiceReply['chatName'];
+  text.innerHTML =
+    config.voiceReply.recordingDone +
+    " " +
+    currentImageForVoiceReply["chatName"];
   message.appendChild(text);
   recordSwal.close();
   Swal.fire({
@@ -121,22 +140,33 @@ ipcRenderer.on("newImage", function(event, arg) {
 
 // handle navigation
 ipcRenderer.on("next", function(event, arg) {
-  nextImage()
+  nextImage();
 });
 
 ipcRenderer.on("previous", function(event, arg) {
-  previousImage()
+  previousImage();
 });
 
 ipcRenderer.on("pause", function(event, arg) {
-  pause()
+  pause();
 });
 
 ipcRenderer.on("play", function(event, arg) {
-  play()
+  play();
 });
 
-// functions to show and hide pause icon
+ipcRenderer.on("playpause", function(event, arg) {
+  if (isPaused) {
+    isPaused = false;
+    loadImage(true, 0);
+    hidePause(isPaused);
+  } else {
+    isPaused = true;
+    clearTimeout(currentTimeout);
+    showPause(isPaused);
+  }
+});
+
 function showPause() {
   var pauseBox = document.createElement("div");
   var div1 = document.createElement("div");
@@ -302,13 +332,13 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
     img.onloadeddata = function() {
       screenAspectRatio =
         remote
-        .getCurrentWindow()
-        .webContents.getOwnerBrowserWindow()
-        .getBounds().width /
+          .getCurrentWindow()
+          .webContents.getOwnerBrowserWindow()
+          .getBounds().width /
         remote
-        .getCurrentWindow()
-        .webContents.getOwnerBrowserWindow()
-        .getBounds().height;
+          .getCurrentWindow()
+          .webContents.getOwnerBrowserWindow()
+          .getBounds().height;
       imageAspectRatio = img.naturalWidth / img.naturalHeight;
       if (imageAspectRatio > screenAspectRatio) {
         img.style.width = "100%";
@@ -333,13 +363,13 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
     img.onload = function() {
       screenAspectRatio =
         remote
-        .getCurrentWindow()
-        .webContents.getOwnerBrowserWindow()
-        .getBounds().width /
+          .getCurrentWindow()
+          .webContents.getOwnerBrowserWindow()
+          .getBounds().width /
         remote
-        .getCurrentWindow()
-        .webContents.getOwnerBrowserWindow()
-        .getBounds().height;
+          .getCurrentWindow()
+          .webContents.getOwnerBrowserWindow()
+          .getBounds().height;
       imageAspectRatio = img.naturalWidth / img.naturalHeight;
       if (imageAspectRatio > screenAspectRatio) {
         img.style.width = "100%";
@@ -371,7 +401,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
   }
   setTimeout(function() {
     container.removeChild(currentImage);
-  }, fadeTime)
+  }, fadeTime);
 
   container.appendChild(div);
 

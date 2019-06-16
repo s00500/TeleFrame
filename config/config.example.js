@@ -20,7 +20,8 @@ var config = {
     next: "right",
     previous: "left",
     play: "l",
-    pause: "k"
+    pause: "k",
+    playpause: "t"
   },
   voiceReply: {
     key: "a",
