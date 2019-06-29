@@ -21,7 +21,8 @@ var config = {
     previous: "left",
     play: "l",
     pause: "k",
-    playpause: "t"
+    playpause: "t",
+    lastpicture: "down"
   },
   voiceReply: {
     key: "a",

@@ -33,6 +33,10 @@ var InputHandler = class {
     globalShortcut.register(config.keys.playpause, () => {
       this.emitter.send("playpause");
     });
+
+    globalShortcut.register(config.keys.lastpicture, () => {
+      this.emitter.send("lastpicture");
+    });
   }
 };
 

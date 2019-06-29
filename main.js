@@ -53,6 +53,7 @@ function createWindow() {
     config.showVideos,
     config.whitelistChats,
     config.voiceReply,
+    emitter,
     logger
   );
 

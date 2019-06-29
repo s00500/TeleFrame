@@ -138,7 +138,12 @@ ipcRenderer.on("newImage", function(event, arg) {
   }
 });
 
-// handle navigation
+ipcRenderer.on("lastpicture", function(event, arg) {
+  if (isPaused) hidePause();
+  loadImage(false, images.length - 1, true);
+  if (isPaused) showPause();
+});
+
 ipcRenderer.on("next", function(event, arg) {
   nextImage();
 });
@@ -246,6 +251,11 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
     if (currentImageIndex < 0) currentImageIndex = images.length - 1;
   }
 
+  if (goToLatest) {
+    currentImageIndex = images.length - 1;
+  }
+
+  logger.info("loading image " + currentImageIndex);
   var image = images[currentImageIndex];
 
   //get current container and create needed elements
