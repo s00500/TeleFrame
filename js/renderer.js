@@ -252,7 +252,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
   }
 
   if (goToLatest) {
-    currentImageIndex = images.length - 1;
+    currentImageIndex = 0;
   }
 
   logger.info("loading image " + currentImageIndex);
