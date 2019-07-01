@@ -296,7 +296,12 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
 
   //set class names and style attributes
   img.src = image.src;
+
   img.className = "image";
+  if (currentImageIndex == 0 && config.newestImageBorder) {
+   img.className = "image-newest";
+  }
+
   div.className = "imgcontainer";
   sender.className = "sender";
   caption.className = "caption";

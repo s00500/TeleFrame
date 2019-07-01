@@ -15,6 +15,7 @@
 
 ## Table Of Contents
 
+- [!!! IMPORTANT !!!](#important)
 - [Table Of Contents](#table-of-contents)
 - [Installation](#installation)
   - [Automatic Installation (Raspberry Pi only!)](#automatic-installation-raspberry-pi-only)
@@ -85,6 +86,7 @@ The following properties can be configured:
 | `showCaption`        | When set to true, TeleFrame will show the caption of the image when the image is shown.                                                                              |
 | `fullscreen`         | When set to true, TeleFrame will run in fullscreen mode.                                                                                                             |
 | `toggleMonitor`      | When set to true, TeleFrame will switch the monitor off and on at the defined hours.                                                                                 |
+| `newestImageBorder`  | Teleframe can highlight the newest image with a red border.                                                                                                          |
 | `turnOnHour`         | Defines when the monitor shuld be turned on.                                                                                                                         |
 | `turnOffHour`        | Defines when the monitor shuld be turned off.                                                                                                                        |
 | `keys`               | Defines an object with 4 strings specifying the keyboard shortcuts for play, next, previous, pause and playpause(for toggling). Set to null for no controls          |

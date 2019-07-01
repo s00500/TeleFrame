@@ -62,6 +62,18 @@ h1 {
   display: none;*/
 }
 
+.image-newest {
+  /*position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;*/
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  border: 10px solid #f83127;
+}
+
 @font-face {
   font-family: "Lato";
   font-style: normal;

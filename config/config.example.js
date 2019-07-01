@@ -13,7 +13,8 @@ var config = {
   newVideoMessage: "Neues Video von",
   showSender: true,
   showCaption: true,
-  toggleMonitor: false,
+  toggleMonitor: true,
+  newestImageBorder: false,
   turnOnHour: 9,
   turnOffHour: 22,
   keys: {
@@ -26,7 +27,7 @@ var config = {
   },
   voiceReply: {
     key: "a",
-    maxRecordTime: 60*1000,
+    maxRecordTime: 60 * 1000,
     recordingMessageTitle: "Voice Message",
     recordingPreMessage: "Recording for",
     recordingPostMessage: "in progress...",
