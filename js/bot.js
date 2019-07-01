@@ -3,6 +3,7 @@ const Telegram = require("telegraf/telegram");
 const Extra = require("telegraf/extra");
 const download = require("image-downloader");
 const moment = require("moment");
+const publicIp = require("public-ip");
 
 const fs = require(`fs`);
 
