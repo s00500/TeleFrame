@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-var ImageWatchdog = class {
+const ImageWatchdog = class {
   constructor(imageFolder, imageCount, images, logger, emitter) {
     this.imageFolder = imageFolder;
     this.imageCount = imageCount;
@@ -12,8 +12,8 @@ var ImageWatchdog = class {
     if (fs.existsSync(this.imageFolder + "/" + "images.json")) {
       fs.readFile(this.imageFolder + "/" + "images.json", (err, data) => {
         if (err) throw err;
-        var jsonData = JSON.parse(data);
-        for (var image in jsonData) {
+        const jsonData = JSON.parse(data);
+        for (const image in jsonData) {
           this.images.push(jsonData[image]);
         }
       });
@@ -37,7 +37,7 @@ var ImageWatchdog = class {
     }
     */
     //notify frontend, that new image arrived
-    var type;
+    const type;
     if (src.split(".").pop() == "mp4") {
       type = "video";
     } else {
@@ -52,9 +52,9 @@ var ImageWatchdog = class {
   }
 
   saveImageArray() {
-    var self = this;
+    let self = this;
     // stringify JSON Object
-    var jsonContent = JSON.stringify(this.images);
+    const jsonContent = JSON.stringify(this.images);
     fs.writeFile(
       this.imageFolder + "/" + "images.json",
       jsonContent,
