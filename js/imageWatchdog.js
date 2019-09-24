@@ -1,7 +1,7 @@
-const fs = require('fs');
+const fs = require("fs");
 
 var ImageWatchdog = class {
-  constructor(imageFolder, imageCount, images, emitter, logger) {
+  constructor(imageFolder, imageCount, images, logger, emitter) {
     this.imageFolder = imageFolder;
     this.imageCount = imageCount;
     this.images = images;
@@ -9,8 +9,8 @@ var ImageWatchdog = class {
     this.emitter = emitter;
 
     //get paths of already downloaded images
-    if (fs.existsSync(this.imageFolder + '/' + "images.json")) {
-      fs.readFile(this.imageFolder + '/' + "images.json", (err, data) => {
+    if (fs.existsSync(this.imageFolder + "/" + "images.json")) {
+      fs.readFile(this.imageFolder + "/" + "images.json", (err, data) => {
         if (err) throw err;
         var jsonData = JSON.parse(data);
         for (var image in jsonData) {
@@ -18,7 +18,7 @@ var ImageWatchdog = class {
         }
       });
     } else {
-      this.saveImageArray()
+      this.saveImageArray();
     }
   }
 
@@ -27,26 +27,26 @@ var ImageWatchdog = class {
     // TODO: message ID and chat name to reply to specific image and to show
     //         chat name for voice recording message
     this.images.unshift({
-      'src': src,
-      'sender': sender,
-      'caption': caption,
-      'chatId': chatId,
-      'chatName': chatName,
-      'messageId': messageId
+      src: src,
+      sender: sender,
+      caption: caption
     });
+    /*
     if (this.images.length >= this.imageCount) {
       this.images.pop();
     }
+    */
     //notify frontend, that new image arrived
-		var type;
-		if (src.split('.').pop() == 'mp4') {
-			type = 'video';
-		} else {
-			type = 'image';
-		}
-    this.emitter.send('newImage', {
+    var type;
+    if (src.split(".").pop() == "mp4") {
+      type = "video";
+    } else {
+      type = "image";
+    }
+    this.logger.info("New image recieved!");
+    this.emitter.send("newImage", {
       sender: sender,
-			type: type
+      type: type
     });
     this.saveImageArray();
   }
@@ -55,15 +55,21 @@ var ImageWatchdog = class {
     var self = this;
     // stringify JSON Object
     var jsonContent = JSON.stringify(this.images);
-    fs.writeFile(this.imageFolder + '/' + "images.json", jsonContent, 'utf8', function(err) {
-      if (err) {
-        self.logger.error("An error occured while writing JSON Object to File.");
-        return console.log(err);
+    fs.writeFile(
+      this.imageFolder + "/" + "images.json",
+      jsonContent,
+      "utf8",
+      function(err) {
+        if (err) {
+          self.logger.error(
+            "An error occured while writing JSON Object to File."
+          );
+          return console.log(err);
+        }
       }
-    });
+    );
   }
-
-}
+};
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/
 if (typeof module !== "undefined") {

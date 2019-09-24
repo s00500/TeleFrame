@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "botonly": "node botonly.js"
+    "botonly": "node botonly.js",
+    "frameonly": "electron frameonly.js"
   },
   "repository": {
     "type": "git",

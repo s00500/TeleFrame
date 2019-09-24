@@ -1,11 +1,10 @@
 const { globalShortcut } = require("electron");
 
 var InputHandler = class {
-  constructor(config, emitter, bot, logger) {
+  constructor(config, emitter, logger) {
     this.config = config;
     this.logger = logger;
     this.emitter = emitter;
-    this.bot = bot;
   }
 
   init() {

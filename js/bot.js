@@ -15,8 +15,8 @@ var Bot = class {
     showVideo,
     whitelistChats,
     voiceReply,
-    emitter,
-    logger
+    logger,
+    emitter
   ) {
     var self = this;
     this.bot = new Telegraf(botToken);
