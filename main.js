@@ -41,8 +41,8 @@ function createWindow() {
     config.imageFolder,
     config.imageCount,
     global.images,
-    emitter,
-    logger
+    logger,
+    emitter
   );
 
   var bot = new telebot(
@@ -52,8 +52,8 @@ function createWindow() {
     config.showVideos,
     config.whitelistChats,
     config.voiceReply,
-    emitter,
-    logger
+    logger,
+    emitter
   );
 
   var inputHandler = new inputhandler(config, emitter, logger);
