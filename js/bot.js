@@ -1,9 +1,6 @@
 const Telegraf = require("telegraf");
 const Telegram = require("telegraf/telegram");
-const Extra = require("telegraf/extra");
 const download = require("image-downloader");
-const moment = require("moment");
-const publicIp = require("public-ip");
 
 const fs = require(`fs`);
 
@@ -98,7 +95,8 @@ var Bot = class {
           download
             .image({
               url: link,
-              dest: this.imageFolder + "/" + moment().format("x") + ".jpg"
+              dest:
+                this.imageFolder + "/" + Math.floor(Date.now() / 1000) + ".jpg"
             })
             .then(({ filename, image }) => {
               var chatName = "";
@@ -147,7 +145,8 @@ var Bot = class {
           download
             .image({
               url: link,
-              dest: this.imageFolder + "/" + moment().format("x") + ".mp4"
+              dest:
+                this.imageFolder + "/" + Math.floor(Date.now() / 1000) + ".mp4"
             })
             .then(({ filename, image }) => {
               var chatName = "";
