@@ -122,23 +122,7 @@ var Bot = class {
 
     //Download incoming video
     this.bot.on("video", (ctx) => {
-      if (
-        !(
-          this.whitelistChats.length > 0 &&
-          this.whitelistChats.indexOf(ctx.message.chat.id) !== -1
-        )
-      ) {
-        this.logger.info(
-          "Whitelist triggered:",
-          ctx.message.chat.id,
-          this.whitelistChats,
-          this.whitelistChats.indexOf(ctx.message.chat.id)
-        );
-        ctx.reply(
-          "Hey there, this bot is whitelisted, pls add your chat id to the config file"
-        );
-        return;
-      }
+      if (this.whitelistCheck(ctx)) return;
 
       if (this.showVideo) {
         this.telegram.getFileLink(ctx.message.video.file_id).then((link) => {
@@ -218,14 +202,7 @@ var Bot = class {
 
   newImage(src, sender, caption) {
     //tell imageWatchdog that a new image arrived
-    this.imageWatchdog.newImage(
-      src,
-      sender,
-      caption,
-      chatId,
-      chatName,
-      messageId
-    );
+    this.imageWatchdog.newImage(src, sender, caption);
   }
 
   sendMessage(message) {
@@ -256,7 +233,7 @@ var Bot = class {
             this.logger.info("success");
           })
           .catch((err) => {
-            this.logger.error("error", err);
+            this.logger.error(err);
           });
       }.bind(this)
     );

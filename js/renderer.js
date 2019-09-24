@@ -17,14 +17,7 @@ var images = remote.getGlobal("images");
 var container = document.getElementById("container");
 var isPaused = false;
 var currentImageIndex = images.length;
-var startTime,
-  endTime,
-  longpress,
-  timeout,
-  recordSwal,
-  currentChatId,
-  currentMessageId,
-  currentTimeout;
+var startTime, endTime, longpress, recordSwal, currentTimeout;
 
 // configure sound notification sound
 if (config.playSoundOnRecieve != false) {
@@ -299,7 +292,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
 
   img.className = "image";
   if (currentImageIndex == 0 && config.newestImageBorder) {
-   img.className = "image-newest";
+    img.className = "image-newest";
   }
 
   div.className = "imgcontainer";

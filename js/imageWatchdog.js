@@ -22,15 +22,15 @@ var ImageWatchdog = class {
     }
   }
 
-  newImage(src, sender, caption, chatId, chatName, messageId) {
+  newImage(src, sender, caption) {
     //handle new incoming image
-    // TODO: message ID and chat name to reply to specific image and to show
-    //         chat name for voice recording message
+    //chat name for voice recording message
     this.images.unshift({
       src: src,
       sender: sender,
       caption: caption
     });
+    // FIXME: better solution for this!
     /*
     if (this.images.length >= this.imageCount) {
       this.images.pop();
@@ -62,7 +62,7 @@ var ImageWatchdog = class {
       function(err) {
         if (err) {
           self.logger.error(
-            "An error occured while writing JSON Object to File."
+            "An error occured while writing JSON Object to File." + err
           );
           return console.log(err);
         }
