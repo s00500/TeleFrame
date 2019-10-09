@@ -96,7 +96,7 @@ const ImageFolderWatcher = class {
       return;
     }
     let meta = JSON.parse(data);
-    meta.src = path.join(this.imageFolder, meta.src);
+    meta.src = filename;
     return meta;
   }
 };
