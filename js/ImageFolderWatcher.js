@@ -46,10 +46,12 @@ const ImageFolderWatcher = class {
         type = "image";
       }
 
-      this.emitter.send("newImage", {
-        sender: meta.sender,
-        type: type
-      });
+      if (this.emitter) {
+        this.emitter.send("newImage", {
+          sender: meta.sender,
+          type: type
+        });
+      }
     });
   }
   /*

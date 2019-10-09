@@ -7,18 +7,12 @@ const { logger } = require("./js/logger");
 const config = require("./config/config");
 const telebot = require("./js/bot");
 const ImageWatchdog = require("./js/imageWatchdog");
-const fs = require("fs");
 
 logger.info("Running bot only version of TeleFrame ...");
 
 this.images = [];
 
-const imageWatchdog = new ImageWatchdog(
-  config.imageFolder,
-  config.imageCount,
-  this.images,
-  logger
-);
+const imageWatchdog = new ImageWatchdog(config.imageFolder, logger);
 
 const bot = new telebot(
   config.botToken,
