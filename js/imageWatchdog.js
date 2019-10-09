@@ -1,4 +1,5 @@
 const fs = require("fs");
+const path = require("path");
 
 const ImageWatchdog = class {
   constructor(imageFolder, logger) {
@@ -21,14 +22,19 @@ const ImageWatchdog = class {
   saveImageMeta(meta) {
     let self = this;
     const jsonContent = JSON.stringify(meta);
-    fs.writeFile(meta.src + ".json", jsonContent, "utf8", function(err) {
-      if (err) {
-        self.logger.error(
-          "An error occured while writing JSON Object to File." + err
-        );
-        return self.logger.error(err);
+    fs.writeFile(
+      path.join(this.imageFolder, meta.src + ".json"),
+      jsonContent,
+      "utf8",
+      function(err) {
+        if (err) {
+          self.logger.error(
+            "An error occured while writing JSON Object to File." + err
+          );
+          return self.logger.error(err);
+        }
       }
-    });
+    );
   }
 };
 

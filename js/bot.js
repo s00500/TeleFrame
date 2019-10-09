@@ -1,10 +1,10 @@
 const Telegraf = require("telegraf");
 const Telegram = require("telegraf/telegram");
 const download = require("image-downloader");
-
+const path = require("path");
 const fs = require(`fs`);
 
-var Bot = class {
+let Bot = class {
   constructor(
     botToken,
     imageFolder,
@@ -15,7 +15,7 @@ var Bot = class {
     logger,
     emitter
   ) {
-    var self = this;
+    let self = this;
     this.bot = new Telegraf(botToken);
     this.telegram = new Telegram(botToken);
     this.logger = logger;
@@ -99,14 +99,14 @@ var Bot = class {
                 this.imageFolder + "/" + Math.floor(Date.now() / 1000) + ".jpg"
             })
             .then(({ filename, image }) => {
-              var chatName = "";
+              let chatName = "";
               if (ctx.message.chat.type == "group") {
                 chatName = ctx.message.chat.title;
               } else if (ctx.message.chat.type == "private") {
                 chatName = ctx.message.from.first_name;
               }
               this.newImage(
-                filename,
+                path.basename(filename),
                 ctx.message.from.first_name,
                 ctx.message.caption,
                 ctx.message.chat.id,
@@ -133,7 +133,7 @@ var Bot = class {
                 this.imageFolder + "/" + Math.floor(Date.now() / 1000) + ".mp4"
             })
             .then(({ filename, image }) => {
-              var chatName = "";
+              let chatName = "";
               if (ctx.message.chat.type == "group") {
                 chatName = ctx.message.chat.title;
               } else if (ctx.message.chat.type == "private") {
@@ -172,7 +172,7 @@ var Bot = class {
 
   startBot() {
     //Start bot
-    var self = this;
+    let self = this;
     this.bot.startPolling(30, 100, null, () =>
       setTimeout(() => self.startBot(), 30000)
     );

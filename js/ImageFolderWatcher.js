@@ -95,7 +95,9 @@ const ImageFolderWatcher = class {
       );
       return;
     }
-    return JSON.parse(data);
+    let meta = JSON.parse(data);
+    meta.src = path.join(this.imageFolder, meta.src);
+    return meta;
   }
 };
 
