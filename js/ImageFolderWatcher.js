@@ -13,24 +13,23 @@ const ImageFolderWatcher = class {
     //if (fs.existsSync(this.imageFolder + "/" + "images.json")) {
 
     fs.readdirSync(this.imageFolder).forEach((filename) => {
-      if (!filename.endsWith(".json")) {
+      if (filename.endsWith(".json")) {
         return;
       }
+
       this.images.unshift(
         this.loadImageMeta(path.join(this.imageFolder, filename))
       );
     });
 
     fs.watch(this.imageFolder, (event, filename) => {
-      if (!filename || !filename.endsWith(".json")) {
+      if (!filename || filename.endsWith(".json")) {
         return;
       }
-      this.logger.info("new image metadata!");
+      this.logger.info("new image!");
 
-      // TODO: Should check if already exists
       const meta = this.loadImageMeta(path.join(this.imageFolder, filename));
       this.images.unshift(meta);
-
       // FIXME: better solution for this!
       /*
       if (this.images.length >= this.imageCount) {
@@ -89,7 +88,7 @@ const ImageFolderWatcher = class {
       */
 
   loadImageMeta(filename) {
-    const data = fs.readFileSync(filename);
+    const data = fs.readFileSync(filename + ".json");
     if (!data) {
       this.logger.info(
         "An error occured while writing JSON Object to File." + err
