@@ -13,7 +13,7 @@ const ImageFolderWatcher = class {
     //if (fs.existsSync(this.imageFolder + "/" + "images.json")) {
 
     fs.readdirSync(this.imageFolder).forEach((filename) => {
-      if (filename.endsWith(".json")) {
+      if (!filename.endsWith(".jpg")) {
         return;
       }
 
@@ -23,7 +23,7 @@ const ImageFolderWatcher = class {
     });
 
     fs.watch(this.imageFolder, (event, filename) => {
-      if (!filename || filename.endsWith(".json")) {
+      if (!filename || !filename.endsWith(".jpg")) {
         return;
       }
       this.logger.info("new image!");
