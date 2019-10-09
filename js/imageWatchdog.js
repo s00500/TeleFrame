@@ -1,73 +1,34 @@
 const fs = require("fs");
 
 const ImageWatchdog = class {
-  constructor(imageFolder, imageCount, images, logger, emitter) {
+  constructor(imageFolder, logger) {
     this.imageFolder = imageFolder;
-    this.imageCount = imageCount;
-    this.images = images;
     this.logger = logger;
-    this.emitter = emitter;
-
-    //get paths of already downloaded images
-    if (fs.existsSync(this.imageFolder + "/" + "images.json")) {
-      fs.readFile(this.imageFolder + "/" + "images.json", (err, data) => {
-        if (err) throw err;
-        const jsonData = JSON.parse(data);
-        for (const image in jsonData) {
-          this.images.push(jsonData[image]);
-        }
-      });
-    } else {
-      this.saveImageArray();
-    }
   }
 
   newImage(src, sender, caption) {
     //handle new incoming image
-    //chat name for voice recording message
-    this.images.unshift({
+    let imageMeta = {
       src: src,
       sender: sender,
       caption: caption
-    });
-    // FIXME: better solution for this!
-    /*
-    if (this.images.length >= this.imageCount) {
-      this.images.pop();
-    }
-    */
-    //notify frontend, that new image arrived
-    const type;
-    if (src.split(".").pop() == "mp4") {
-      type = "video";
-    } else {
-      type = "image";
-    }
-    this.logger.info("New image recieved!");
-    this.emitter.send("newImage", {
-      sender: sender,
-      type: type
-    });
-    this.saveImageArray();
+    };
+
+    this.logger.info("New image recieved!, saving");
+    this.saveImageMeta(imageMeta);
   }
 
-  saveImageArray() {
+  saveImageMeta(meta) {
     let self = this;
-    // stringify JSON Object
-    const jsonContent = JSON.stringify(this.images);
-    fs.writeFile(
-      this.imageFolder + "/" + "images.json",
-      jsonContent,
-      "utf8",
-      function(err) {
-        if (err) {
-          self.logger.error(
-            "An error occured while writing JSON Object to File." + err
-          );
-          return console.log(err);
-        }
+    const jsonContent = JSON.stringify(meta);
+    fs.writeFile(meta.src + ".json", jsonContent, "utf8", function(err) {
+      if (err) {
+        self.logger.error(
+          "An error occured while writing JSON Object to File." + err
+        );
+        return self.logger.error(err);
       }
-    );
+    });
   }
 };
 

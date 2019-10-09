@@ -1,7 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const { logger, rendererLogger } = require("./js/logger");
 const config = require("./config/config");
-const imagewatcher = require("./js/imageWatchdog");
+const ImageFolderWatcher = require("./js/imagefolderwatcher");
 const inputhandler = require("./js/inputHandler");
 const schedules = require("./js/schedules");
 
@@ -31,45 +31,22 @@ function createWindow() {
   // get instance of webContents for sending messages to the frontend
   const emitter = win.webContents;
 
-  // create imageWatchdog and bot
-  var imageWatchdog = new imagewatcher(
+  let imageFolderWatcher = new ImageFolderWatcher(
     config.imageFolder,
     config.imageCount,
     global.images,
-    emitter,
-    logger
+    logger,
+    emitter
   );
 
-  var inputHandler = new inputhandler(config, emitter, logger);
+  let inputHandler = new inputhandler(config, emitter, logger);
   inputHandler.init();
 
-  /*
-  var bot = new telebot(
-    config.botToken,
-    config.imageFolder,
-    imageWatchdog,
-    config.showVideos,
-    config.whitelistChats,
-    config.voiceReply,
-    emitter,
-    logger
-  );
-
-
-  if (config.voiceReply !== null) {
-    var voiceReply = new voicerecorder(config, emitter, bot, logger, ipcMain);
-    voiceReply.init();
-  }
-*/
   // generate scheduler, when times for turning monitor off and on
   // are given in the config file
   if (config.toggleMonitor) {
-    var scheduler = new schedules(config, logger);
+    let scheduler = new schedules(config, logger);
   }
-
-  // Open the DevTools.
-  // win.webContents.openDevTools()
-  bot.startBot();
 
   win.on("closed", () => {
     win = null;

@@ -3,6 +3,7 @@ const { logger, rendererLogger } = require("./js/logger");
 const config = require("./config/config");
 const telebot = require("./js/bot");
 const imagewatcher = require("./js/imageWatchdog");
+const ImageFolderWatcher = require("./js/imagefolderwatcher");
 const inputhandler = require("./js/inputHandler");
 const voicerecorder = require("./js/voiceRecorder");
 const schedules = require("./js/schedules");
@@ -30,7 +31,9 @@ function createWindow() {
 
   const emitter = win.webContents;
 
-  const imageWatchdog = new imagewatcher(
+  const imageWatchdog = new imagewatcher(config.imageFolder, logger);
+
+  let imageFolderWatcher = new ImageFolderWatcher(
     config.imageFolder,
     config.imageCount,
     global.images,
