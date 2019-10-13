@@ -140,7 +140,7 @@ let Bot = class {
                 chatName = ctx.message.from.first_name;
               }
               this.newImage(
-                filename,
+                path.basename(filename),
                 ctx.message.from.first_name,
                 ctx.message.caption,
                 ctx.message.chat.id,
