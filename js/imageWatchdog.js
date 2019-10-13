@@ -15,7 +15,7 @@ const ImageWatchdog = class {
       caption: caption
     };
 
-    this.logger.info("New image recieved!, saving");
+    this.logger.info("New image recieved!, saving", src);
     this.saveImageMeta(imageMeta);
   }
 

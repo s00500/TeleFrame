@@ -289,6 +289,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
 
   //set class names and style attributes
   img.src = image.src;
+  logger.info(image.src);
 
   img.className = "image";
   if (currentImageIndex == 0 && config.newestImageBorder) {

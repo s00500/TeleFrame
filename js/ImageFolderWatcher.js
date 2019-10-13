@@ -13,7 +13,7 @@ const ImageFolderWatcher = class {
     //if (fs.existsSync(this.imageFolder + "/" + "images.json")) {
 
     fs.readdirSync(this.imageFolder).forEach((filename) => {
-      if (!filename.endsWith(".jpg")) {
+      if (!filename.endsWith(".jpg") && !filename.endsWith(".mp4")) {
         return;
       }
 
@@ -22,36 +22,65 @@ const ImageFolderWatcher = class {
       );
     });
 
-    fs.watch(this.imageFolder, (event, filename) => {
-      if (!filename || !filename.endsWith(".jpg")) {
-        return;
-      }
-      this.logger.info("new image!");
+    fs.watch(
+      this.imageFolder,
+      (event, filename) => {
+        if (
+          !filename ||
+          (!filename.endsWith(".jpg") && !filename.endsWith(".mp4"))
+        ) {
+          return;
+        }
 
-      const meta = this.loadImageMeta(path.join(this.imageFolder, filename));
-      this.images.unshift(meta);
-      // FIXME: better solution for this!
-      /*
+        if (event !== "rename") {
+          return;
+        }
+
+        setTimeout(() => {
+          this.logger.info("new image!", filename);
+
+          const meta = this.loadImageMeta(
+            path.join(this.imageFolder, filename)
+          );
+
+          try {
+            //find name key
+            this.images.forEach((imagemeta) => {
+              if (imagemeta.src == meta.src) {
+                throw "Meta exists";
+              }
+            });
+          } catch (err) {
+            this.logger.error(err);
+            return;
+          }
+
+          this.images.unshift(meta);
+          // FIXME: better solution for this!
+          /*
       if (this.images.length >= this.imageCount) {
         this.images.pop();
       }
       */
-      //notify frontend, that new image arrived
 
-      let type;
-      if (meta.src.split(".").pop() == "mp4") {
-        type = "video";
-      } else {
-        type = "image";
-      }
+          //notify frontend, that new image arrived
+          let type;
+          if (meta.src.split(".").pop() == "mp4") {
+            type = "video";
+          } else {
+            type = "image";
+          }
 
-      if (this.emitter) {
-        this.emitter.send("newImage", {
-          sender: meta.sender,
-          type: type
+          if (this.emitter) {
+            this.emitter.send("newImage", {
+              sender: meta.sender,
+              type: type
+            });
+          }
         });
-      }
-    });
+      },
+      2000
+    );
   }
   /*
   newImage(src, sender, caption) {
