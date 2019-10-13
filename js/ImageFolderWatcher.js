@@ -16,117 +16,99 @@ const ImageFolderWatcher = class {
       if (!filename.endsWith(".jpg") && !filename.endsWith(".mp4")) {
         return;
       }
-
-      this.images.unshift(
-        this.loadImageMeta(path.join(this.imageFolder, filename))
+      const imageMeta = this.loadImageMeta(
+        path.join(this.imageFolder, filename)
       );
+      if (imageMeta !== false) {
+        this.images.unshift(imageMeta);
+      }
     });
 
-    fs.watch(
-      this.imageFolder,
-      (event, filename) => {
-        if (
-          !filename ||
-          (!filename.endsWith(".jpg") && !filename.endsWith(".mp4"))
-        ) {
-          return;
-        }
-
-        if (event !== "rename") {
-          return;
-        }
-
-        setTimeout(() => {
-          this.logger.info("new image!", filename);
-
-          const meta = this.loadImageMeta(
-            path.join(this.imageFolder, filename)
-          );
-
-          try {
-            //find name key
-            this.images.forEach((imagemeta) => {
-              if (imagemeta.src == meta.src) {
-                throw "Meta exists";
-              }
-            });
-          } catch (err) {
-            this.logger.error(err);
-            return;
-          }
-
-          this.images.unshift(meta);
-          // FIXME: better solution for this!
-          /*
-      if (this.images.length >= this.imageCount) {
-        this.images.pop();
+    fs.watch(this.imageFolder, (event, filename) => {
+      if (
+        !filename ||
+        (!filename.endsWith(".jpg") && !filename.endsWith(".mp4"))
+      ) {
+        return;
       }
-      */
 
-          //notify frontend, that new image arrived
-          let type;
-          if (meta.src.split(".").pop() == "mp4") {
-            type = "video";
-          } else {
-            type = "image";
-          }
+      if (event !== "rename") {
+        return;
+      }
 
-          if (this.emitter) {
-            this.emitter.send("newImage", {
-              sender: meta.sender,
-              type: type
-            });
-          }
-        });
-      },
-      2000
-    );
+      this.logger.info("new image!", filename);
+
+      this.loadRecievedImage(filename);
+    });
   }
-  /*
-  newImage(src, sender, caption) {
-    //handle new incoming image
-    let imageMeta = {
-      src: src,
-      sender: sender,
-      caption: caption
-    };
 
+  loadRecievedImage(filename) {
+    this.logger.info("Trying to load", filename);
+
+    const meta = this.loadImageMeta(path.join(this.imageFolder, filename));
+
+    if (meta === false) {
+      this.logger.info("No Meta found, waiting...", filename);
+      setTimeout(() => {
+        this.loadRecievedImage(filename);
+      }, 2000);
+      return;
+    }
+
+    try {
+      //find name key
+      this.images.forEach((imagemeta) => {
+        if (imagemeta.src == meta.src) {
+          throw "Meta exists";
+        }
+      });
+    } catch (err) {
+      this.logger.error(err);
+      return;
+    }
+
+    this.images.unshift(meta);
     // FIXME: better solution for this!
     /*
-    if (this.images.length >= this.imageCount) {
-      this.images.pop();
-    }
-    * /
+if (this.images.length >= this.imageCount) {
+  this.images.pop();
+}
+*/
+
     //notify frontend, that new image arrived
     let type;
-    if (src.split(".").pop() == "mp4") {
+    if (meta.src.split(".").pop() == "mp4") {
       type = "video";
     } else {
       type = "image";
     }
-    this.logger.info("New image recieved!");
-    if (this.emmiter) {
+
+    if (this.emitter) {
       this.emitter.send("newImage", {
-        sender: sender,
+        sender: meta.sender,
         type: type
       });
     }
-    this.saveImageMeta(imageMeta);
-    this.images.unshift(imageMeta);
   }
-      */
 
   loadImageMeta(filename) {
-    const data = fs.readFileSync(filename + ".json");
-    if (!data) {
-      this.logger.info(
-        "An error occured while writing JSON Object to File." + err
-      );
-      return;
+    try {
+      const data = fs.readFileSync(filename + ".json");
+
+      if (!data) {
+        this.logger.info(
+          "An error occured while reading JSON Object to File." + err
+        );
+        return;
+      }
+      let meta = JSON.parse(data);
+      meta.src = filename;
+      return meta;
+    } catch (error) {
+      this.logger.error("no such meta yet");
+      this.logger.error(error);
+      return false;
     }
-    let meta = JSON.parse(data);
-    meta.src = filename;
-    return meta;
   }
 };
 
