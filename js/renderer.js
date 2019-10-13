@@ -412,6 +412,7 @@ function loadImage(isNext, fadeTime, goToLatest = false) {
     container.removeChild(currentImage);
   }, fadeTime);
 
+  if (fadeTime == 0) container.innerHTML = "";
   container.appendChild(div);
 
   //fade out sender and caption at half time of the shown image
